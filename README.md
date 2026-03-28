@@ -1,6 +1,6 @@
 # Anthropos
 
-**Anthropos** is a web application that lets users send messages into the future and preserve their legacy on-chain. Inspired by humanity’s historical attempts to leave a mark—from carved stories in stone to the Voyager Golden Record—this app allows anyone to leave a message that can outlast them digitally.
+**Anthropos** is an app that lets users send messages into the future and preserve their legacy on-chain. Inspired by humanity’s historical attempts to leave a mark—from carved stories in stone to the Voyager Golden Record—this app allows anyone to leave a message that can outlast them digitally.
 
 ---
 
