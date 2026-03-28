@@ -70,11 +70,11 @@
 
 - The app currently simulates blockchain transactions and media uploads.  
 - Messages are stored locally in the browser’s LocalStorage, so clearing the browser cache will remove all messages.  
-- The background features an animated image with a blur overlay for a modern aesthetic.
+- The background features an image with a blur overlay for a modern aesthetic.
 
 ---
 
 ## Contact
 
 For inquiries or support, reach out to:  
-**admin-anthropos@gmail.com**
+**admin.anthropos@gmail.com**
