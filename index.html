@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anthropos</title>
+
+<!-- Added meta tag -->
+<meta name="base:app_id" content="69c0f86e3beb94a927e63d82" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+  background-image: url('https://i.imgur.com/JNuTDBe.jpeg');
+  background-repeat: no-repeat;
+  background-size: 140% 140%;
+  background-attachment: fixed;
+  animation: moveBg 40s linear infinite;
+}
+@keyframes moveBg {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+.overlay {
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(12px);
+}
+</style>
+</head>
+<body class="text-white">
+<div class="overlay min-h-screen flex flex-col items-center p-6">
+  <h1 class="text-4xl font-bold mb-4">Anthropos</h1>
+  <p class="max-w-xl text-center mb-6 leading-relaxed">
+    For as long as we’ve existed, we’ve tried to leave something behind.<br><br>
+    In 1977, humanity launched the Voyager Golden Record into space. This was a collection of sounds, images, and messages meant to outlast us.<br><br>
+    Long before that, we carved stories into stone, built monuments, and left traces of our existence behind.<br><br>
+    This app will do the same by preserving your legacy onchain.<br><br>
+    Everything else may fade. This doesn't.<br><br>
+    Send a message into tomorrow
+  </p>
+
+  <input id="name" placeholder="Your name (optional)" class="p-2 mb-1 w-full max-w-md text-black rounded">
+  <small class="text-gray-300 mb-2">You can leave this blank to remain anonymous</small>
+
+  <textarea id="message" placeholder="Write your message..." class="p-2 mb-2 w-full max-w-md text-black rounded"></textarea>
+  <div class="flex gap-2">
+    <button onclick="postMessage()" class="bg-blue-500 px-4 py-2 rounded">Post</button>
+    <button onclick="openPayment()" class="bg-yellow-500 px-4 py-2 rounded">Add Media Files</button>
+  </div>
+  <input type="file" id="fileUpload" class="hidden mt-3" multiple>
+  <div id="result" class="text-center mt-4"></div>
+
+  <hr class="my-6 w-full">
+  <h2 class="text-2xl mb-2">Explore Messages</h2>
+  <div class="flex gap-2 mb-4 flex-wrap">
+    <select id="filterType" class="text-black p-2 rounded">
+      <option value="all">All</option>
+      <option value="name">Name</option>
+      <option value="date">Date</option>
+      <option value="keyword">Keyword</option>
+    </select>
+    <input id="search" placeholder="Search..." class="p-2 text-black rounded">
+    <button onclick="searchFeed()" class="bg-green-500 px-3 rounded">Search</button>
+  </div>
+  <div id="feed"></div>
+
+  <hr class="my-6 w-full">
+  <h2 class="text-2xl mb-2">Contact</h2>
+  <p>admin.anthropos@gmail.com</p>
+</div>
+
+<script>
+let paid = false;
+
+function openPayment(){
+  alert("Select payment option (simulated) → Success");
+  paid = true;
+  document.getElementById('fileUpload').classList.remove('hidden');
+}
+
+function postMessage(){
+  const name = document.getElementById('name').value || "Anonymous";
+  const message = document.getElementById('message').value;
+
+  if(!message) return alert("Write a message first");
+
+  const id = Math.random().toString(36).substring(2);
+
+  const post = {
+    name,
+    message,
+    createdAt: new Date().toISOString(),
+    tx: "0x" + Math.random().toString(16).substring(2,10)
+  };
+
+  localStorage.setItem(id, JSON.stringify(post));
+
+  document.getElementById('result').innerHTML = `
+    <p>Message uploaded successfully.</p>
+    <p class="text-sm">TX: ${post.tx}</p>
+    <button onclick="copyLink('${id}')" class="bg-green-500 px-2 py-1 rounded mt-2">Copy Link</button>
+  `;
+
+  loadFeed();
+}
+
+function copyLink(id){
+  const url = window.location.href.split('?')[0] + '?id=' + id;
+  navigator.clipboard.writeText(url);
+  alert('Link copied');
+}
+
+function loadFeed(){
+  const feed = document.getElementById('feed');
+  feed.innerHTML = '';
+
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    const post = JSON.parse(localStorage.getItem(key));
+
+    feed.innerHTML += renderPost(post);
+  }
+}
+
+function renderPost(post){
+  return `
+    <div class="mb-4 border p-3 rounded bg-black/40">
+      <p><b>${post.name}</b></p>
+      <p>${post.message}</p>
+      <p class="text-sm">${new Date(post.createdAt).toLocaleString()}</p>
+      <button onclick="report()" class="text-red-400 text-sm mt-1">Report</button>
+    </div>
+  `;
+}
+
+function searchFeed(){
+  const type = document.getElementById('filterType').value;
+  const query = document.getElementById('search').value.toLowerCase();
+  const feed = document.getElementById('feed');
+
+  feed.innerHTML = '';
+
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    const post = JSON.parse(localStorage.getItem(key));
+
+    let match = false;
+
+    if(type === 'name') match = post.name.toLowerCase().includes(query);
+    else if(type === 'keyword') match = post.message.toLowerCase().includes(query);
+    else if(type === 'date') match = new Date(post.createdAt).toLocaleString().toLowerCase().includes(query);
+    else match = post.name.toLowerCase().includes(query) || post.message.toLowerCase().includes(query);
+
+    if(match) feed.innerHTML += renderPost(post);
+  }
+}
+
+function report(){
+  alert("Reported (simulated)");
+}
+
+loadFeed();
+</script>
+</body>
+  </html>
